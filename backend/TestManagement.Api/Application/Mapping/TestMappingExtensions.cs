@@ -67,12 +67,49 @@ public static class TestMappingExtensions
 
     public static void ApplyUpdate(this TestDefinition test, TestWriteRequest request)
     {
-        test.Title = request.Title.Trim();
-        test.Description = NormalizeDescription(request.Description);
-        test.UpdatedAtUtc = DateTime.UtcNow;
+        test.ApplyMetadata(request);
         test.Questions.Clear();
 
         FillQuestions(test, request);
+    }
+
+    public static void ApplyMetadata(this TestDefinition test, TestWriteRequest request)
+    {
+        test.Title = request.Title.Trim();
+        test.Description = NormalizeDescription(request.Description);
+        test.UpdatedAtUtc = DateTime.UtcNow;
+    }
+
+    public static IReadOnlyList<Question> ToQuestionEntities(this TestWriteRequest request, Guid testId)
+    {
+        var questions = new List<Question>();
+        var questionOrder = 0;
+
+        foreach (var questionDto in request.Questions)
+        {
+            var question = new Question
+            {
+                TestDefinitionId = testId,
+                Text = questionDto.Text.Trim(),
+                Type = questionDto.Type,
+                SortOrder = questionOrder++
+            };
+
+            var optionOrder = 0;
+            foreach (var optionDto in questionDto.Options)
+            {
+                question.Options.Add(new AnswerOption
+                {
+                    Text = optionDto.Text.Trim(),
+                    IsCorrect = optionDto.IsCorrect,
+                    SortOrder = optionOrder++
+                });
+            }
+
+            questions.Add(question);
+        }
+
+        return questions;
     }
 
     private static QuestionDto ToDto(this Question question)

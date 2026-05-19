@@ -53,12 +53,13 @@ public sealed class TestService(
         var test = await testRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Test with id '{id}' was not found.");
 
-        await testRepository.DeleteQuestionsAsync(id, cancellationToken);
-        test.ApplyUpdate(request);
+        test.ApplyMetadata(request);
+        await testRepository.ReplaceQuestionsAsync(id, request.ToQuestionEntities(id), cancellationToken);
 
         await testRepository.SaveChangesAsync(cancellationToken);
 
-        return test.ToDetailsDto();
+        var updatedTest = await GetExistingTestAsync(id, trackChanges: false, cancellationToken);
+        return updatedTest.ToDetailsDto();
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)

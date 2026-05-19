@@ -11,5 +11,8 @@ public interface ITestRepository : IRepository<TestDefinition>
         bool trackChanges,
         CancellationToken cancellationToken = default);
 
-    Task DeleteQuestionsAsync(Guid testId, CancellationToken cancellationToken = default);
+    Task ReplaceQuestionsAsync(
+        Guid testId,
+        IReadOnlyList<Question> questions,
+        CancellationToken cancellationToken = default);
 }
