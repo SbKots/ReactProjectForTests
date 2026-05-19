@@ -30,7 +30,10 @@ public sealed class TestRepository : EfRepository<TestDefinition>, ITestReposito
             .FirstOrDefaultAsync(test => test.Id == id, cancellationToken);
     }
 
-    public async Task DeleteQuestionsAsync(Guid testId, CancellationToken cancellationToken = default)
+    public async Task ReplaceQuestionsAsync(
+        Guid testId,
+        IReadOnlyList<Question> questions,
+        CancellationToken cancellationToken = default)
     {
         var questionIds = _dbContext.Questions
             .Where(question => question.TestDefinitionId == testId)
@@ -43,6 +46,8 @@ public sealed class TestRepository : EfRepository<TestDefinition>, ITestReposito
         await _dbContext.Questions
             .Where(question => question.TestDefinitionId == testId)
             .ExecuteDeleteAsync(cancellationToken);
+
+        await _dbContext.Questions.AddRangeAsync(questions, cancellationToken);
     }
 
     private IQueryable<TestDefinition> BaseQuery(bool trackChanges)
