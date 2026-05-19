@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test Management</title>
+    <link rel="stylesheet" href="/styles.css?v=6" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          
+          <h1>Система управления тестами</h1>
+        </div>
+        <div class="actions">
+          <button id="refreshButton" class="ghost">Обновить</button>
+          <button id="newButton">Создать тест</button>
+        </div>
+      </header>
+
+      <p id="status" class="status">Загрузка...</p>
+
+      <section id="listView" class="grid"></section>
+
+      <section id="editorView" class="panel hidden">
+        <form id="testForm">
+          <div class="form-grid">
+            <label>
+              Название
+              <input id="titleInput" maxlength="200" required />
+            </label>
+            <label>
+              Описание
+              <textarea id="descriptionInput" maxlength="4000" rows="2" wrap="soft"></textarea>
+            </label>
+          </div>
+          <div id="questionsEditor" class="stack"></div>
+          <div class="actions form-actions">
+            <button type="button" class="ghost" id="addQuestionButton">Добавить вопрос</button>
+            <button type="submit">Сохранить</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="detailsView" class="stack hidden"></section>
+      <section id="takeView" class="stack hidden"></section>
+    </main>
+
+    <script src="/app.js?v=6"></script>
+  </body>
+</html>
